@@ -1,9 +1,13 @@
+import 'package:geocoding/geocoding.dart';
+import 'package:open_street_map_search_and_pick/open_street_map_search_and_pick.dart';
 import 'package:story_app/common/common.dart';
+import 'package:story_app/features/maps_screen/data/data.dart';
 
 import '../../home_screen/data/data.dart';
 
 class DetailStoryRepository {
   final ApiService _apiService = ApiService.instance;
+  final MapsRepository _mapsRepository = MapsRepository.instance;
 
   Future<Story> getStory(String storyId) async {
     try {
@@ -11,6 +15,11 @@ class DetailStoryRepository {
           await _apiService.get('${URL.storiesUrl}/$storyId', dataKey: 'story');
 
       Story story = Story.fromJson(res.data);
+      if (story.lat != null && story.lon != null) {
+        final Placemark placemark =
+            await _mapsRepository.getLocation(LatLong(story.lat!, story.lon!));
+        story = story.copyWith(placemark: placemark);
+      }
       return story;
     } on ServerException catch (e) {
       throw e.message;

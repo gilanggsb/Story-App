@@ -31,16 +31,28 @@ class StoryCard extends StatelessWidget {
             cacheKey: story.id ?? '',
           ),
         ),
-        title: DefaultText(
-          story.name ?? '',
-          color: AppColors.blackColor,
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DefaultText(
+              story.name ?? '',
+              color: AppColors.blackColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+            DefaultText(
+              story.placemark?.subAdministrativeArea ?? '',
+              color: AppColors.blackColor,
+              fontWeight: FontWeight.w300,
+              fontSize: 12,
+            ),
+          ],
         ),
         subtitle: DefaultText(
           story.description ?? '',
           color: AppColors.blackColor,
-          fontWeight: FontWeight.w300,
+          fontWeight: FontWeight.w400,
           fontSize: 16,
         ),
       ),

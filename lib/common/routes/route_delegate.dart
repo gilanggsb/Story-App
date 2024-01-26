@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:story_app/common/common.dart';
 import '../../features/features.dart';
+import '../../features/maps_screen/maps_screen.dart';
 
 class MyRouterDelegate extends RouterDelegate<RouteParamsModel>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<RouteParamsModel> {
@@ -70,7 +71,7 @@ class MyRouterDelegate extends RouterDelegate<RouteParamsModel>
 
   List<Page> get _loginStack => [
         const MaterialPage(
-          key: ValueKey("LoginScreen"),
+          key: ValueKey("HomeScreen"),
           child: HomeScreen(),
         ),
         if (routeParamsModel?.routeName == RouteName.addStoryScreen)
@@ -82,6 +83,11 @@ class MyRouterDelegate extends RouterDelegate<RouteParamsModel>
           MaterialPage(
             key: const ValueKey("DetailStoryScreen"),
             child: DetailStoryScreen(),
+          ),
+        if (routeParamsModel?.routeName == RouteName.mapsScreen)
+          const MaterialPage(
+            key: ValueKey("MapsScreen"),
+            child: MapsScreen(),
           ),
       ];
 

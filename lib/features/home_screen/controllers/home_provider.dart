@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import '../../../common/common.dart';
 import '../data/data.dart';
 
@@ -39,7 +40,7 @@ class HomeProvider extends ChangeNotifier {
       showLoading();
       clearStories();
       ReqStories reqStories =
-          const ReqStories(location: false, size: 30, page: 1);
+          const ReqStories(location: true, size: 30, page: 1);
       List<Story> storyList =
           await _homeRepository.getStories(reqStories: reqStories);
       stories.addAll(storyList);

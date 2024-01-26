@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:story_app/features/maps_screen/utils/utils.dart';
 import '../../common/common.dart';
 import '../home_screen/data/data.dart';
 import 'controllers/controllers.dart';
@@ -19,6 +20,8 @@ class DetailStoryScreen extends StatelessWidget {
       _detailStoryProvider.getDetailStory();
     });
   }
+
+  void openMap() => {_detailStoryProvider.openMaps()};
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +68,14 @@ class DetailStoryScreen extends StatelessWidget {
                       color: AppColors.blackColor,
                     ),
                   ],
+                ),
+                GestureDetector(
+                  onTap: openMap,
+                  child: DefaultText(
+                    decoration: TextDecoration.underline,
+                    MapsUtil.convertToAddress(story?.placemark),
+                    color: AppColors.blueColor,
+                  ),
                 ),
                 const SizedBox(
                   height: 18,
