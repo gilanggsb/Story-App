@@ -10,11 +10,10 @@ class DetailStoryProvider extends ChangeNotifier {
   final MyRouterDelegate _myRouter = MyRouterDelegate.instance;
   Story? story;
 
-  void getDetailStory() async {
+  void getDetailStory(String storyId) async {
     try {
       showLoading();
-      Story detailStory = await _detailStoryRepository
-          .getStory(_myRouter.routeParamsModel?.params ?? '');
+      Story detailStory = await _detailStoryRepository.getStory(storyId);
       story = detailStory;
 
       notifyListeners();
@@ -29,9 +28,9 @@ class DetailStoryProvider extends ChangeNotifier {
 
   void openMaps() {
     if (story?.lat == null && story?.lon == null) return;
-    _myRouter.changeRoute<LatLong>(
-      routeName: RouteName.mapsScreen,
-      params: LatLong(story?.lat ?? 0, story?.lon ?? 0),
-    );
+    // _myRouter.changeRoute<LatLong>(
+    //   routeName: RouteName.mapsScreen,
+    //   params: LatLong(story?.lat ?? 0, story?.lon ?? 0),
+    // );
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:open_street_map_search_and_pick/open_street_map_search_and_pick.dart';
 import '../../../common/common.dart';
 import '../data/data.dart';
 
@@ -10,22 +12,18 @@ class MapsProvider extends ChangeNotifier {
   final StorageService _storageService = StorageService.instance;
   final MyRouterDelegate _myRouter = MyRouterDelegate.instance;
   final MapsRepository _mapsRepository = MapsRepository.instance;
-  int? pageItems = 1;
-  int sizeItems = 10;
-  // List<Story> stories = [];
-
+  late LatLong latLong;
+  late Placemark? placemark;
   static MapsProvider? _instance;
 
   MapsProvider._();
 
   static MapsProvider get instance => _instance ??= MapsProvider._();
 
-  void getCurrentLocation() async {
+  void getCurrentLocation(LatLong latLong) async {
     try {
       // showLoading();
-      // print(
-      //   "🚀 ~ MapsProvider ~ voidgetCurrentLocation ~ _myRouter.routeParamsModel?.params: ${_myRouter.routeParamsModel?.params}",
-      // );
+      _mapsRepository.getLocation(latLong);
 
       // Story detailStory = await _detailStoryRepository
       //     .getStory(_myRouter.routeParamsModel?.params ?? '');

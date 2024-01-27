@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../common/common.dart';
 import 'auth_screen.dart';
 
@@ -8,7 +9,7 @@ class LoginScreen extends StatelessWidget with AuthTextFieldMixin {
   final AuthProvider authProvider = AuthProvider();
 
   void onPressRegister() {
-    MyRouterDelegate.instance.changeRoute(routeName: RouteName.registerScreen);
+    globalContext?.pushNamed(RouteName.registerScreen.name);
   }
 
   void onPressLogin() async {

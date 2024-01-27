@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:go_router/go_router.dart';
 import '../../../common/common.dart';
 import '../data/data.dart';
 
@@ -26,8 +27,7 @@ class HomeProvider extends ChangeNotifier {
       showLoading();
       clearStories();
       await _storageService.clearUser();
-      _myRouter.changeRoute(
-          routeName: RouteName.loginScreen, isLoggedIn: false);
+      globalContext?.goNamed(RouteName.loginScreen.name);
     } catch (e) {
       _myRouter.showSnackbar('Something went wrong $e');
     } finally {
@@ -55,15 +55,13 @@ class HomeProvider extends ChangeNotifier {
   }
 
   void gotoDetailStory(String storyId) {
-    _myRouter.changeRoute<String>(
-      routeName: RouteName.detailStoryScreen,
-      params: storyId,
-    );
+    print("cek story $storyId");
+    globalContext?.pushNamed(RouteName.detailStoryScreen.name, extra: storyId);
   }
 
   void gotoAddStory() {
-    _myRouter.changeRoute<String>(
-      routeName: RouteName.addStoryScreen,
+    globalContext?.pushNamed(
+      RouteName.addStoryScreen.name,
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../auth_screen/data/data.dart';
 import '../../common/common.dart';
 
@@ -10,6 +11,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final MyRouterDelegate myRouter = MyRouterDelegate.instance;
+
   @override
   void initState() {
     super.initState();
@@ -17,15 +20,14 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void checkUser() async {
-    final MyRouterDelegate myRouter = MyRouterDelegate.instance;
     final StorageService storageService = StorageService.instance;
     final UserModel? user = await storageService.getUser();
-    if (user == null) {
-      myRouter.changeRoute(routeName: RouteName.loginScreen);
+    if (user != null) {
+      globalContext?.go(RouteName.loginScreen.pathName);
       return;
     }
 
-    myRouter.changeRoute(routeName: RouteName.homeScreen, isLoggedIn: true);
+    globalContext?.go(RouteName.homeScreen.pathName);
   }
 
   @override

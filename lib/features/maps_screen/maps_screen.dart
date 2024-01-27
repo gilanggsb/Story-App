@@ -6,7 +6,8 @@ import '../../common/common.dart';
 import 'controllers/controllers.dart';
 
 class MapsScreen extends StatefulWidget {
-  const MapsScreen({super.key});
+  final LatLong latLong;
+  const MapsScreen({super.key, required this.latLong});
 
   @override
   State<MapsScreen> createState() => MapsScreenState();
@@ -18,7 +19,7 @@ class MapsScreenState extends State<MapsScreen> {
   @override
   void initState() {
     super.initState();
-    mapsProvider.getCurrentLocation();
+    mapsProvider.getCurrentLocation(widget.latLong);
   }
 
   @override

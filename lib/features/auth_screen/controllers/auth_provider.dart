@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../common/common.dart';
 import '../data/data.dart';
 
@@ -16,7 +17,8 @@ class AuthProvider extends ChangeNotifier {
         return;
       }
       _myRouter.showSnackbar("Login successfully");
-      _myRouter.changeRoute(routeName: RouteName.homeScreen, isLoggedIn: true);
+      // _myRouter.isLogin = true;
+      globalContext?.goNamed(RouteName.homeScreen.name);
     } on String catch (e) {
       _myRouter.showSnackbar(e);
     } catch (e) {

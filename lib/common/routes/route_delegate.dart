@@ -1,122 +1,85 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:open_street_map_search_and_pick/open_street_map_search_and_pick.dart';
 import 'package:story_app/common/common.dart';
+import 'package:story_app/features/auth_screen/auth_screen.dart';
+import 'package:story_app/features/maps_screen/maps_screen.dart';
 import '../../features/features.dart';
-import '../../features/maps_screen/maps_screen.dart';
+import 'route_observer.dart';
 
-class MyRouterDelegate extends RouterDelegate<RouteParamsModel>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin<RouteParamsModel> {
-  MyRouterDelegate._() : _navigatorKey = GlobalKey<NavigatorState>();
+GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+BuildContext? globalContext = navigatorKey.currentContext;
+
+class MyRouterDelegate with ChangeNotifier {
+  MyRouterDelegate._();
 
   static final instance = MyRouterDelegate._();
 
-  final GlobalKey<NavigatorState> _navigatorKey;
-  BuildContext? context;
-  RouteParamsModel? routeParamsModel;
-  List<Page> historyStack = [];
+  // GoRouter configuration
+  final routerConfig = GoRouter(
+    debugLogDiagnostics: true,
+    navigatorKey: navigatorKey,
+    observers: [RouterObserver()],
+    initialLocation: '/',
+    redirect: (context, state) async {
+      StorageService storageService = StorageService.instance;
+      final UserModel? user = await storageService.getUser();
+      if (user == null) {
+        return RouteName.loginScreen.pathName;
+      }
 
-  RouteParamsModel? get() => routeParamsModel;
+      if (state.fullPath == RouteName.splashScreen.pathName ||
+          state.fullPath == RouteName.homeScreen.pathName) {
+        return RouteName.homeScreen.pathName;
+      }
 
-  @override
-  Widget build(BuildContext context) {
-    if (routeParamsModel?.routeName == null) {
-      historyStack = _splashStack;
-    } else if (routeParamsModel?.isLoggedIn ?? false) {
-      historyStack = _loginStack;
-    } else {
-      historyStack = _logoutStack;
-    }
-    return Navigator(
-      key: navigatorKey,
-      pages: historyStack,
-      onPopPage: ((route, result) {
-        final bool didPop = route.didPop(result);
-        if (!didPop) {
-          return false;
-        }
-        routeParamsModel = routeParamsModel?.copyWith(
-          params: null,
-          routeName: routeParamsModel?.lastRouteName,
-          lastRouteName: routeParamsModel?.routeName,
-        );
-        notifyListeners();
-        return true;
-      }),
-    );
-  }
-
-  @override
-  GlobalKey<NavigatorState>? get navigatorKey => _navigatorKey;
-
-  @override
-  Future<void> setNewRoutePath(configuration) async {}
-
-  List<Page> get _splashStack => [
-        const MaterialPage(
-          key: ValueKey("SplashScreen"),
-          child: SplashScreen(),
-        ),
-      ];
-
-  List<Page> get _logoutStack => [
-        MaterialPage(
-          key: const ValueKey("LoginScreen"),
-          child: LoginScreen(),
-        ),
-        if (routeParamsModel?.routeName == RouteName.registerScreen)
-          MaterialPage(
-            key: const ValueKey("RegisterScreen"),
-            child: RegisterScreen(),
-          ),
-      ];
-
-  List<Page> get _loginStack => [
-        const MaterialPage(
-          key: ValueKey("HomeScreen"),
-          child: HomeScreen(),
-        ),
-        if (routeParamsModel?.routeName == RouteName.addStoryScreen)
-          MaterialPage(
-            key: const ValueKey("AddStoryScreen"),
-            child: AddStoryScreen(),
-          ),
-        if (routeParamsModel?.routeName == RouteName.detailStoryScreen)
-          MaterialPage(
-            key: const ValueKey("DetailStoryScreen"),
-            child: DetailStoryScreen(),
-          ),
-        if (routeParamsModel?.routeName == RouteName.mapsScreen)
-          const MaterialPage(
-            key: ValueKey("MapsScreen"),
-            child: MapsScreen(),
-          ),
-      ];
-
-  void changeRoute<T>({
-    required RouteName routeName,
-    RouteName? lastRouteName,
-    bool? isLoggedIn,
-    T? params,
-  }) {
-    context = _navigatorKey.currentContext;
-    routeParamsModel = routeParamsModel == null
-        ? RouteParamsModel(
-            routeName: routeName,
-            params: params,
-            isLoggedIn: isLoggedIn,
-            lastRouteName: lastRouteName ?? routeParamsModel?.routeName,
-          )
-        : routeParamsModel?.copyWith(
-            routeName: routeName,
-            lastRouteName: lastRouteName ?? routeParamsModel?.routeName,
-            isLoggedIn: isLoggedIn,
-            params: params,
-          );
-    debugPrint('Current Route Name ${routeParamsModel?.routeName}');
-    notifyListeners();
-  }
+      return state.fullPath;
+      // return state.fullPath;
+    },
+    routes: [
+      GoRoute(
+        path: RouteName.splashScreen.pathName,
+        name: RouteName.splashScreen.name,
+        builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: RouteName.loginScreen.pathName,
+        name: RouteName.loginScreen.name,
+        builder: (context, state) => LoginScreen(),
+      ),
+      GoRoute(
+        path: RouteName.registerScreen.pathName,
+        name: RouteName.registerScreen.name,
+        builder: (context, state) => RegisterScreen(),
+      ),
+      GoRoute(
+          path: RouteName.homeScreen.pathName,
+          name: RouteName.homeScreen.name,
+          builder: (context, state) => const HomeScreen(),
+          routes: [
+            GoRoute(
+              path: RouteName.detailStoryScreen.pathName,
+              name: RouteName.detailStoryScreen.name,
+              builder: (context, state) =>
+                  DetailStoryScreen(storyId: state.extra as String),
+            ),
+            GoRoute(
+              path: RouteName.addStoryScreen.pathName,
+              name: RouteName.addStoryScreen.name,
+              builder: (context, state) => AddStoryScreen(),
+            ),
+            GoRoute(
+              path: RouteName.mapsScreen.pathName,
+              name: RouteName.mapsScreen.name,
+              builder: (context, state) =>
+                  MapsScreen(latLong: state.extra as LatLong),
+            ),
+          ]),
+    ],
+  );
 
   void showSnackbar(String text, {Widget? child}) {
-    ScaffoldMessenger.of(navigatorKey!.currentContext!).showSnackBar(
+    ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
       SnackBar(
         content: child ??
             DefaultText(
@@ -125,5 +88,9 @@ class MyRouterDelegate extends RouterDelegate<RouteParamsModel>
             ),
       ),
     );
+  }
+
+  void popRoute() {
+    globalContext?.pop();
   }
 }

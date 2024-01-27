@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -9,15 +10,17 @@ import 'controllers/controllers.dart';
 
 class DetailStoryScreen extends StatelessWidget {
   final DetailStoryProvider _detailStoryProvider;
+  final String storyId;
 
-  DetailStoryScreen({super.key})
+  DetailStoryScreen({super.key, required this.storyId})
       : _detailStoryProvider = DetailStoryProvider() {
     getDetailStory();
   }
 
   void getDetailStory() {
     Timer(const Duration(seconds: 1), () {
-      _detailStoryProvider.getDetailStory();
+      print("detaiil $storyId");
+      _detailStoryProvider.getDetailStory(storyId);
     });
   }
 
