@@ -5,3 +5,4 @@ export 'default_image.dart';
 export 'default_scaffold.dart';
 export 'default_text.dart';
 export 'loading_overlay_component.dart';
+export 'my_tootip.dart';

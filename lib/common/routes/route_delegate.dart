@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:open_street_map_search_and_pick/open_street_map_search_and_pick.dart';
-import 'package:story_app/common/common.dart';
-import 'package:story_app/features/auth_screen/auth_screen.dart';
-import 'package:story_app/features/maps_screen/maps_screen.dart';
+import '../../features/maps_screen/data/data.dart';
+import '../common.dart';
+import '../../features/auth_screen/auth_screen.dart';
+import '../../features/maps_screen/maps_screen.dart';
 import '../../features/features.dart';
 import 'route_observer.dart';
 
@@ -72,7 +72,7 @@ class MyRouterDelegate with ChangeNotifier {
               path: RouteName.mapsScreen.pathName,
               name: RouteName.mapsScreen.name,
               builder: (context, state) =>
-                  MapsScreen(latLong: state.extra as LatLong),
+                  MapsScreen(mapsScreenModel: state.extra as MapsScreenModel),
             ),
           ]),
     ],

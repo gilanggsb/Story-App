@@ -1,5 +1,5 @@
 import 'package:geocoding/geocoding.dart';
-import 'package:open_street_map_search_and_pick/open_street_map_search_and_pick.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:story_app/common/common.dart';
 import 'package:story_app/features/maps_screen/data/data.dart';
 
@@ -24,8 +24,8 @@ class HomeRepository {
 
         /// Get Location
         if (story.lon != null && story.lat != null) {
-          final Placemark placemark = await _mapsRepository
-              .getLocation(LatLong(story.lat!, story.lon!));
+          final Placemark placemark =
+              await _mapsRepository.getLocation(LatLng(story.lat!, story.lon!));
           story = story.copyWith(placemark: placemark);
         }
 
@@ -38,7 +38,6 @@ class HomeRepository {
     } on Failure catch (e) {
       throw e.message;
     } catch (e) {
-      print('kenapa nihh $e');
       throw 'Something went wrong';
     }
   }

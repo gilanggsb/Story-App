@@ -1,5 +1,5 @@
 import 'package:geocoding/geocoding.dart';
-import 'package:open_street_map_search_and_pick/open_street_map_search_and_pick.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:story_app/common/common.dart';
 
 class MapsRepository {
@@ -9,7 +9,7 @@ class MapsRepository {
 
   static MapsRepository get instance => _instance ??= MapsRepository._();
 
-  Future<Placemark> getLocation(LatLong latLong) async {
+  Future<Placemark> getLocation(LatLng latLong) async {
     try {
       final List<Placemark> res = await placemarkFromCoordinates(
         latLong.latitude,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:go_router/go_router.dart';
 import '../../../common/common.dart';
 import '../data/data.dart';
@@ -55,7 +54,6 @@ class HomeProvider extends ChangeNotifier {
   }
 
   void gotoDetailStory(String storyId) {
-    print("cek story $storyId");
     globalContext?.pushNamed(RouteName.detailStoryScreen.name, extra: storyId);
   }
 

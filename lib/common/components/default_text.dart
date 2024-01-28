@@ -111,7 +111,6 @@ class DefaultText extends StatelessWidget {
             strutStyle: strutStyle,
             textDirection: textDirection,
             textHeightBehavior: textHeightBehavior,
-            textScaleFactor: textScaleFactor,
             textWidthBasis: textWidthBasis,
           ),
         ),

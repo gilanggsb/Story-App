@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:open_street_map_search_and_pick/open_street_map_search_and_pick.dart';
+import 'package:latlong2/latlong.dart';
 import '../../../common/common.dart';
 import '../data/data.dart';
 
@@ -9,33 +10,33 @@ abstract class Disposable {
 }
 
 class MapsProvider extends ChangeNotifier {
-  final StorageService _storageService = StorageService.instance;
+  late final MapController mapController;
   final MyRouterDelegate _myRouter = MyRouterDelegate.instance;
   final MapsRepository _mapsRepository = MapsRepository.instance;
-  late LatLong latLong;
-  late Placemark? placemark;
-  static MapsProvider? _instance;
+  late LatLng latLong;
+  Placemark? placemark;
 
-  MapsProvider._();
+  MapsProvider() {
+    mapController = MapController();
+  }
 
-  static MapsProvider get instance => _instance ??= MapsProvider._();
-
-  void getCurrentLocation(LatLong latLong) async {
+  void getCurrentLocation(LatLng latLong) async {
     try {
-      // showLoading();
-      _mapsRepository.getLocation(latLong);
-
-      // Story detailStory = await _detailStoryRepository
-      //     .getStory(_myRouter.routeParamsModel?.params ?? '');
-      // story = detailStory;
-
+      showLoading();
+      placemark = await _mapsRepository.getLocation(latLong);
       notifyListeners();
     } on String catch (e) {
       _myRouter.showSnackbar(e);
     } catch (e) {
       _myRouter.showSnackbar('Something went wrong $e');
     } finally {
-      // dismissLoading();
+      dismissLoading();
     }
+  }
+
+  void onMapChanged(pickedData) {
+    if (pickedData == null) return;
+    // pickData = pickedData;
+    notifyListeners();
   }
 }

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+extension ObjectExt on Object? {
+  bool get isNull => this == null;
+}
+
 extension ContextExt on BuildContext {
   double get getHeight => MediaQuery.of(this).size.height;
   double get getWidth => MediaQuery.of(this).size.width;

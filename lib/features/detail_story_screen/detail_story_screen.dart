@@ -1,26 +1,39 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:story_app/features/maps_screen/utils/utils.dart';
+import '../maps_screen/utils/utils.dart';
 import '../../common/common.dart';
 import '../home_screen/data/data.dart';
 import 'controllers/controllers.dart';
 
-class DetailStoryScreen extends StatelessWidget {
-  final DetailStoryProvider _detailStoryProvider;
+class DetailStoryScreen extends StatefulWidget {
   final String storyId;
 
-  DetailStoryScreen({super.key, required this.storyId})
-      : _detailStoryProvider = DetailStoryProvider() {
-    getDetailStory();
+  const DetailStoryScreen({
+    super.key,
+    required this.storyId,
+  });
+
+  @override
+  State<DetailStoryScreen> createState() => _DetailStoryScreenState();
+}
+
+class _DetailStoryScreenState extends State<DetailStoryScreen> {
+  final DetailStoryProvider _detailStoryProvider = DetailStoryProvider();
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      getDetailStory();
+    });
   }
 
-  void getDetailStory() {
+  void getDetailStory() async {
+    await Geolocator.requestPermission();
     Timer(const Duration(seconds: 1), () {
-      print("detaiil $storyId");
-      _detailStoryProvider.getDetailStory(storyId);
+      _detailStoryProvider.getDetailStory(widget.storyId);
     });
   }
 
