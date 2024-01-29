@@ -16,9 +16,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final HomeProvider homeProvider = HomeProvider.instance;
   void getStories() {
-    Timer(const Duration(seconds: 1), () {
-      homeProvider.getStories();
-    });
+    homeProvider.getStories();
   }
 
   void onPressLogout() {
@@ -36,7 +34,22 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    getStories();
+    homeProvider.scrollController.addListener(() {
+      if (homeProvider.scrollController.position.pixels >=
+          homeProvider.scrollController.position.maxScrollExtent) {
+        if (homeProvider.pageItems != null) {
+          getStories();
+        }
+      }
+    });
+
+    Future.microtask(() async => getStories());
+  }
+
+  @override
+  void dispose() {
+    homeProvider.scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -65,13 +78,32 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Consumer<HomeProvider>(
         builder: (context, value, child) {
           return ListView.builder(
+            controller: homeProvider.scrollController,
             shrinkWrap: true,
-            itemCount: value.stories.length,
+            itemCount:
+                homeProvider.stories.length + (value.pageItems != null ? 1 : 0),
             itemBuilder: (context, index) {
-              final Story story = value.stories[index];
-              return StoryCard(
-                story: story,
-                onPress: () => onPressStoryCard(story),
+              final state = value.homeState;
+              if (index == homeProvider.stories.length &&
+                  value.pageItems != null) {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+
+              if (state == HomeState.loaded) {
+                final Story story = value.stories[index];
+                return StoryCard(
+                  story: story,
+                  onPress: () => onPressStoryCard(story),
+                );
+              }
+
+              return const Center(
+                child: Text("No data"),
               );
             },
           );

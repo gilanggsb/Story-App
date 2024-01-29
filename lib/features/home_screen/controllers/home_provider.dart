@@ -8,6 +8,12 @@ abstract class Disposable {
   void dispose();
 }
 
+enum HomeState {
+  initial,
+  loading,
+  loaded,
+}
+
 class HomeProvider extends ChangeNotifier {
   final StorageService _storageService = StorageService.instance;
   final MyRouterDelegate _myRouter = MyRouterDelegate.instance;
@@ -15,6 +21,8 @@ class HomeProvider extends ChangeNotifier {
   int? pageItems = 1;
   int sizeItems = 10;
   List<Story> stories = [];
+  HomeState homeState = HomeState.initial;
+  final ScrollController scrollController = ScrollController();
 
   static HomeProvider? _instance;
 
@@ -37,21 +45,34 @@ class HomeProvider extends ChangeNotifier {
 
   void getStories() async {
     try {
-      showLoading();
-      clearStories();
-      ReqStories reqStories =
-          const ReqStories(location: true, size: 30, page: 1);
+      if (pageItems == 1) {
+        homeState = HomeState.loading;
+        notifyListeners();
+      }
+      // clearStories();
+      ReqStories reqStories = ReqStories(
+        location: false,
+        size: sizeItems,
+        page: pageItems,
+      );
+
       List<Story> storyList =
           await _homeRepository.getStories(reqStories: reqStories);
       stories.addAll(storyList);
+      homeState = HomeState.loaded;
+
+      if (storyList.length < sizeItems) {
+        pageItems = null;
+      } else {
+        pageItems = pageItems! + 1;
+      }
+
       notifyListeners();
     } on String catch (e) {
       _myRouter.showSnackbar(e);
     } catch (e) {
       _myRouter.showSnackbar('Something went wrong $e');
-    } finally {
-      dismissLoading();
-    }
+    } finally {}
   }
 
   void gotoDetailStory(String storyId) {
