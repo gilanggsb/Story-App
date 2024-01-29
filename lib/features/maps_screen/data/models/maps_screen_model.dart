@@ -16,6 +16,7 @@ class MapsScreenModel with _$MapsScreenModel {
     final LatLng? latLng,
     required final bool isPreviewMode,
   }) = _MapScreenModel;
+
   factory MapsScreenModel.fromJson(Map<String, dynamic> json) =>
       _$MapsScreenModelFromJson(json);
 

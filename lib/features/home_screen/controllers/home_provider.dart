@@ -51,7 +51,7 @@ class HomeProvider extends ChangeNotifier {
       }
       // clearStories();
       ReqStories reqStories = ReqStories(
-        location: false,
+        location: 0,
         size: sizeItems,
         page: pageItems,
       );

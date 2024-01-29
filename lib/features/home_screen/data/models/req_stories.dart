@@ -1,27 +1,18 @@
-class ReqStories {
-  final int? page;
-  final int? size;
-  final bool? location;
+// ignore_for_file: invalid_annotation_target
 
-  const ReqStories({this.page, this.size, this.location});
+import 'package:freezed_annotation/freezed_annotation.dart';
+part 'req_stories.g.dart';
+part 'req_stories.freezed.dart';
 
-  factory ReqStories.fromJson(Map<String, dynamic> json) => ReqStories(
-        page: json["page"],
-        size: json["size"],
-        location: json["location"],
-      );
+@freezed
+class ReqStories with _$ReqStories {
+  @JsonSerializable()
+  const factory ReqStories({
+    final int? page,
+    final int? size,
+    @JsonKey(defaultValue: 0) final int? location,
+  }) = _ReqStories;
 
-  int parseLocationToNumber(bool? location) {
-    if (location == null || !location) {
-      return 0;
-    }
-
-    return 1;
-  }
-
-  Map<String, dynamic> toJson() => {
-        "page": page,
-        "size": size,
-        "location": parseLocationToNumber(location),
-      };
+  factory ReqStories.fromJson(Map<String, dynamic> json) =>
+      _$ReqStoriesFromJson(json);
 }
