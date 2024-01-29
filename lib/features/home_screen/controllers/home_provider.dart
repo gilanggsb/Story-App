@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import '../../../common/common.dart';
 import '../data/data.dart';
@@ -57,10 +58,13 @@ class HomeProvider extends ChangeNotifier {
     globalContext?.pushNamed(RouteName.detailStoryScreen.name, extra: storyId);
   }
 
-  void gotoAddStory() {
-    globalContext?.pushNamed(
-      RouteName.addStoryScreen.name,
-    );
+  void gotoAddStory() async {
+    try {
+      await Geolocator.requestPermission();
+      globalContext?.pushNamed(
+        RouteName.addStoryScreen.name,
+      );
+    } catch (e) {}
   }
 
   void clearStories() {

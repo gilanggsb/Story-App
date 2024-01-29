@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
     homeProvider.gotoDetailStory(story.id ?? '');
   }
 
-  void onPressAddStory() {
+  void onPressAddStory() async {
     homeProvider.gotoAddStory();
   }
 

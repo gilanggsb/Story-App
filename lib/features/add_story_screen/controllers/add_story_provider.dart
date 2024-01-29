@@ -1,6 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:latlong2/latlong.dart';
 import '../../home_screen/controllers/controllers.dart';
+import '../../maps_screen/data/data.dart';
 import '../data/data.dart';
 import '../../../common/common.dart';
 
@@ -10,6 +14,8 @@ class AddStoryProvider extends ChangeNotifier {
   final MyRouterDelegate _myRouter = MyRouterDelegate.instance;
   final AddStoryRepository _repository = AddStoryRepository();
   final HomeProvider _homeProvider = HomeProvider.instance;
+  LatLng? latLng;
+  Placemark? placemark;
 
   void setImagePath(String? value) {
     imagePath = value;
@@ -66,7 +72,12 @@ class AddStoryProvider extends ChangeNotifier {
       }
 
       showLoading();
-      final data = UploadStory(description: description, file: imageFile!);
+      final data = UploadStory(
+        description: description,
+        file: imageFile!,
+        lat: latLng?.latitude,
+        lon: latLng?.longitude,
+      );
       await _repository.postStory(data);
 
       _myRouter.showSnackbar('Upload Story Success');
@@ -79,5 +90,18 @@ class AddStoryProvider extends ChangeNotifier {
     } finally {
       dismissLoading();
     }
+  }
+
+  void pickLocation() async {
+    final res = await globalContext?.pushNamed<(Placemark?, LatLng?)>(
+      RouteName.mapsScreen.name,
+      extra: const MapsScreenModel(
+        isPreviewMode: false,
+      ),
+    );
+    if (res == null) return;
+    placemark = res.$1;
+    latLng = res.$2;
+    notifyListeners();
   }
 }
