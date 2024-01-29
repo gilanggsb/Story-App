@@ -70,7 +70,7 @@ class LoadingOverlayAlt extends StatelessWidget {
 Future showCustomBottomSheet(Widget widget, {Color? bgColor}) {
   return showModalBottomSheet(
     isScrollControlled: true,
-    context: MyRouterDelegate.instance.context!,
+    context: globalContext!,
     backgroundColor: bgColor ?? AppColors.backgroundColor,
     builder: (BuildContext builderContext) => LoadingOverlayAlt(
       child: SingleChildScrollView(
@@ -82,7 +82,7 @@ Future showCustomBottomSheet(Widget widget, {Color? bgColor}) {
 
 void showCustomDialog(Widget widget, {bool barrierDismissible = true}) {
   showDialog(
-    context: MyRouterDelegate.instance.context!,
+    context: globalContext!,
     barrierDismissible: barrierDismissible,
     barrierColor: const Color(0x55000000),
     builder: (BuildContext builderContext) => LoadingOverlayAlt(child: widget),
@@ -90,9 +90,9 @@ void showCustomDialog(Widget widget, {bool barrierDismissible = true}) {
 }
 
 void showLoading() {
-  return LoadingOverlayAlt.of(MyRouterDelegate.instance.context!).show();
+  return LoadingOverlayAlt.of(globalContext!).show();
 }
 
 void dismissLoading() {
-  return LoadingOverlayAlt.of(MyRouterDelegate.instance.context!).hide();
+  return LoadingOverlayAlt.of(globalContext!).hide();
 }

@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../common/components/components.dart';
-import '../../common/utils/utils.dart';
+import '../maps_screen/utils/utils.dart';
+import '../../common/common.dart';
 import 'components/components.dart';
 import 'controllers/controllers.dart';
 import 'utils/textfield_mixin.dart';
 
-class AddStoryScreen extends StatelessWidget with TextFieldMixin {
-  AddStoryScreen({super.key}) : addStoryProvider = AddStoryProvider();
+class AddStoryScreen extends StatefulWidget {
+  const AddStoryScreen({super.key});
 
-  final AddStoryProvider addStoryProvider;
+  @override
+  State<AddStoryScreen> createState() => _AddStoryScreenState();
+}
+
+class _AddStoryScreenState extends State<AddStoryScreen> with TextFieldMixin {
+  final AddStoryProvider addStoryProvider = AddStoryProvider();
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   void onPressOpenCamera(BuildContext context) {
     context.read<AddStoryProvider>().openCamera();
@@ -21,6 +31,10 @@ class AddStoryScreen extends StatelessWidget with TextFieldMixin {
 
   void onPressPostStory(BuildContext context) async {
     context.read<AddStoryProvider>().postStory(controller.text);
+  }
+
+  void onPressAddLocation(BuildContext context) {
+    context.read<AddStoryProvider>().pickLocation();
   }
 
   @override
@@ -80,6 +94,30 @@ class AddStoryScreen extends StatelessWidget with TextFieldMixin {
               ),
               const SizedBox(
                 height: 20,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const DefaultText(
+                    'Lokasi : ',
+                    color: AppColors.blackColor,
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: DefaultText(
+                      addStoryProvider.placemark != null
+                          ? MapsUtil.convertToAddress(
+                              addStoryProvider.placemark)
+                          : 'tambah lokasi',
+                      decoration: TextDecoration.underline,
+                      color: AppColors.blueColor,
+                      onTap: () => onPressAddLocation(context),
+                    ),
+                  )
+                ],
+              ),
+              const SizedBox(
+                height: 12,
               ),
               DescriptionTextField(
                 hintText: 'Your description',

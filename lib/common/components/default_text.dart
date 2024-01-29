@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:story_app/common/utils/utils.dart';
+import '../utils/utils.dart';
 
 class DefaultText extends StatelessWidget {
   const DefaultText(
@@ -47,6 +47,7 @@ class DefaultText extends StatelessWidget {
     this.suffix,
     this.enableIndentForFirstCharacter = false,
     this.mainAxisAlignmentRow,
+    this.onTap,
   });
   final String text;
   final TextStyle? style;
@@ -89,34 +90,37 @@ class DefaultText extends StatelessWidget {
   final bool enableIndentForFirstCharacter;
   final Widget? suffix;
   final MainAxisAlignment? mainAxisAlignmentRow;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: mainAxisAlignmentRow ?? MainAxisAlignment.start,
-      children: [
-        Flexible(
-          child: Text(
-            "${enableIndentForFirstCharacter ? '\t' : ''}$text",
-            style: style ?? generateTextStyle(context),
-            textAlign: textAlign,
-            key: key,
-            locale: locale,
-            maxLines: maxLines,
-            overflow: overflow,
-            selectionColor: selectionColor,
-            semanticsLabel: semanticsLabel,
-            softWrap: softWrap,
-            strutStyle: strutStyle,
-            textDirection: textDirection,
-            textHeightBehavior: textHeightBehavior,
-            textScaleFactor: textScaleFactor,
-            textWidthBasis: textWidthBasis,
+    return GestureDetector(
+      onTap: onTap,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: mainAxisAlignmentRow ?? MainAxisAlignment.start,
+        children: [
+          Flexible(
+            child: Text(
+              "${enableIndentForFirstCharacter ? '\t' : ''}$text",
+              style: style ?? generateTextStyle(context),
+              textAlign: textAlign,
+              key: key,
+              locale: locale,
+              maxLines: maxLines,
+              overflow: overflow,
+              selectionColor: selectionColor,
+              semanticsLabel: semanticsLabel,
+              softWrap: softWrap,
+              strutStyle: strutStyle,
+              textDirection: textDirection,
+              textHeightBehavior: textHeightBehavior,
+              textWidthBasis: textWidthBasis,
+            ),
           ),
-        ),
-        suffix ?? const SizedBox.shrink(),
-      ],
+          suffix ?? const SizedBox.shrink(),
+        ],
+      ),
     );
   }
 

@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
-import 'package:story_app/common/common.dart';
-import 'package:story_app/features/home_screen/controllers/home_provider.dart';
+import 'common/common.dart';
+import 'features/home_screen/controllers/controllers.dart';
 
 void main() async {
   HttpOverrides.global = MyHttpOverrides();
@@ -25,15 +25,15 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => HomeProvider.instance),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Story App',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
         home: LoadingOverlayAlt(
-          child: Router(
-            routerDelegate: myRouterDelegate,
-            backButtonDispatcher: RootBackButtonDispatcher(),
+          child: MaterialApp.router(
+            routerConfig: myRouterDelegate.routerConfig,
           ),
         ),
       ),

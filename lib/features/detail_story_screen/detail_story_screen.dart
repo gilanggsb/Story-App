@@ -1,24 +1,43 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import '../maps_screen/utils/utils.dart';
 import '../../common/common.dart';
 import '../home_screen/data/data.dart';
 import 'controllers/controllers.dart';
 
-class DetailStoryScreen extends StatelessWidget {
-  final DetailStoryProvider _detailStoryProvider;
+class DetailStoryScreen extends StatefulWidget {
+  final String storyId;
 
-  DetailStoryScreen({super.key})
-      : _detailStoryProvider = DetailStoryProvider() {
-    getDetailStory();
-  }
+  const DetailStoryScreen({
+    super.key,
+    required this.storyId,
+  });
 
-  void getDetailStory() {
-    Timer(const Duration(seconds: 1), () {
-      _detailStoryProvider.getDetailStory();
+  @override
+  State<DetailStoryScreen> createState() => _DetailStoryScreenState();
+}
+
+class _DetailStoryScreenState extends State<DetailStoryScreen> {
+  final DetailStoryProvider _detailStoryProvider = DetailStoryProvider();
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      getDetailStory();
     });
   }
+
+  void getDetailStory() async {
+    await Geolocator.requestPermission();
+    Timer(const Duration(seconds: 1), () {
+      _detailStoryProvider.getDetailStory(widget.storyId);
+    });
+  }
+
+  void openMap() => {_detailStoryProvider.openMaps()};
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +84,14 @@ class DetailStoryScreen extends StatelessWidget {
                       color: AppColors.blackColor,
                     ),
                   ],
+                ),
+                GestureDetector(
+                  onTap: openMap,
+                  child: DefaultText(
+                    decoration: TextDecoration.underline,
+                    MapsUtil.convertToAddress(story?.placemark),
+                    color: AppColors.blueColor,
+                  ),
                 ),
                 const SizedBox(
                   height: 18,

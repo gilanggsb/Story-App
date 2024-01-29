@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import '../../../common/common.dart';
 import '../data/data.dart';
 
 abstract class Disposable {
   void dispose();
+}
+
+enum HomeState {
+  initial,
+  loading,
+  loaded,
 }
 
 class HomeProvider extends ChangeNotifier {
@@ -13,6 +21,8 @@ class HomeProvider extends ChangeNotifier {
   int? pageItems = 1;
   int sizeItems = 10;
   List<Story> stories = [];
+  HomeState homeState = HomeState.initial;
+  final ScrollController scrollController = ScrollController();
 
   static HomeProvider? _instance;
 
@@ -25,8 +35,7 @@ class HomeProvider extends ChangeNotifier {
       showLoading();
       clearStories();
       await _storageService.clearUser();
-      _myRouter.changeRoute(
-          routeName: RouteName.loginScreen, isLoggedIn: false);
+      globalContext?.goNamed(RouteName.loginScreen.name);
     } catch (e) {
       _myRouter.showSnackbar('Something went wrong $e');
     } finally {
@@ -36,34 +45,47 @@ class HomeProvider extends ChangeNotifier {
 
   void getStories() async {
     try {
-      showLoading();
-      clearStories();
-      ReqStories reqStories =
-          const ReqStories(location: false, size: 30, page: 1);
+      if (pageItems == 1) {
+        homeState = HomeState.loading;
+        notifyListeners();
+      }
+      // clearStories();
+      ReqStories reqStories = ReqStories(
+        location: 0,
+        size: sizeItems,
+        page: pageItems,
+      );
+
       List<Story> storyList =
           await _homeRepository.getStories(reqStories: reqStories);
       stories.addAll(storyList);
+      homeState = HomeState.loaded;
+
+      if (storyList.length < sizeItems) {
+        pageItems = null;
+      } else {
+        pageItems = pageItems! + 1;
+      }
+
       notifyListeners();
     } on String catch (e) {
       _myRouter.showSnackbar(e);
     } catch (e) {
       _myRouter.showSnackbar('Something went wrong $e');
-    } finally {
-      dismissLoading();
-    }
+    } finally {}
   }
 
   void gotoDetailStory(String storyId) {
-    _myRouter.changeRoute<String>(
-      routeName: RouteName.detailStoryScreen,
-      params: storyId,
-    );
+    globalContext?.pushNamed(RouteName.detailStoryScreen.name, extra: storyId);
   }
 
-  void gotoAddStory() {
-    _myRouter.changeRoute<String>(
-      routeName: RouteName.addStoryScreen,
-    );
+  void gotoAddStory() async {
+    try {
+      await Geolocator.requestPermission();
+      globalContext?.pushNamed(
+        RouteName.addStoryScreen.name,
+      );
+    } catch (e) {}
   }
 
   void clearStories() {
