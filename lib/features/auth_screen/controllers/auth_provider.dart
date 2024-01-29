@@ -38,7 +38,7 @@ class AuthProvider extends ChangeNotifier {
         return;
       }
       _myRouter.showSnackbar("Register successfully");
-      _myRouter.popRoute();
+      globalContext?.pop();
     } on String catch (e) {
       _myRouter.showSnackbar(e);
     } catch (e) {

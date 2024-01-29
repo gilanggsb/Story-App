@@ -45,6 +45,7 @@ class HomeProvider extends ChangeNotifier {
 
   void getStories() async {
     try {
+      print("CEKK ITEMS $pageItems");
       if (pageItems == 1) {
         homeState = HomeState.loading;
         notifyListeners();
@@ -82,13 +83,19 @@ class HomeProvider extends ChangeNotifier {
   void gotoAddStory() async {
     try {
       await Geolocator.requestPermission();
-      globalContext?.pushNamed(
+      final bool? isRefresh = await globalContext?.pushNamed<bool?>(
         RouteName.addStoryScreen.name,
       );
+      if (isRefresh == null) return;
+      if (!isRefresh) return;
+
+      clearStories();
     } catch (e) {}
   }
 
   void clearStories() {
+    homeState = HomeState.initial;
+    pageItems = 1;
     stories.clear();
     notifyListeners();
   }

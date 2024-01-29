@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:story_app/common/common.dart';
@@ -28,7 +29,8 @@ class DetailStoryProvider extends ChangeNotifier {
     }
   }
 
-  void openMaps() {
+  void openMaps() async {
+    await Geolocator.requestPermission();
     if (story?.lat == null && story?.lon == null) return;
     globalContext?.pushNamed(
       RouteName.mapsScreen.name,
@@ -37,9 +39,5 @@ class DetailStoryProvider extends ChangeNotifier {
         isPreviewMode: true,
       ),
     );
-    // _myRouter.changeRoute<LatLong>(
-    //   routeName: RouteName.mapsScreen,
-    //   params: LatLong(story?.lat ?? 0, story?.lon ?? 0),
-    // );
   }
 }

@@ -14,9 +14,15 @@ class AddStoryRepository {
       final fileBytes =
           await compressImage(await uploadStory.file.readAsBytes());
 
+      Map<String, dynamic> data = {
+        "description": uploadStory.description,
+        "lat": uploadStory.lat,
+        "lon": uploadStory.lon,
+      };
+
       final UploadFormDataModel formData = UploadFormDataModel(
         fileBytes: fileBytes,
-        data: uploadStory.toJson(),
+        data: data,
         contentType: MediaType("image", "jpeg"),
         fileKey: 'photo',
         fileName: fileName,

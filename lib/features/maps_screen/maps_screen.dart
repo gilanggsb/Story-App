@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'components/fluttermap_zoom_buttons.dart';
 import 'utils/utils.dart';
@@ -56,8 +57,9 @@ class MapsScreenState extends State<MapsScreen> {
           builder: (context, value, child) => FlutterMap(
             mapController: mapsProvider.mapController,
             options: MapOptions(
-              initialCenter:
-                  widget.mapsScreenModel.latLng ?? mapsProvider.latLong,
+              initialCenter: widget.mapsScreenModel.latLng ??
+                  mapsProvider.latLong ??
+                  const LatLng(50.5, 30.51),
               initialZoom: 5,
               maxZoom: 20,
               minZoom: 1,
@@ -88,25 +90,27 @@ class MapsScreenState extends State<MapsScreen> {
                     ),
                 ],
               ),
-              MarkerLayer(
-                markers: [
-                  Marker(
-                    point:
-                        widget.mapsScreenModel.latLng ?? mapsProvider.latLong,
-                    width: 100,
-                    height: 100,
-                    child: MyTooltip(
-                      message:
-                          MapsUtil.convertToAddress(mapsProvider.placemark),
-                      child: const Icon(
-                        Icons.location_pin,
-                        color: AppColors.whiteColor,
-                        size: 40,
+              if (widget.mapsScreenModel.latLng != null ||
+                  mapsProvider.latLong != null)
+                MarkerLayer(
+                  markers: [
+                    Marker(
+                      point: widget.mapsScreenModel.latLng ??
+                          mapsProvider.latLong!,
+                      width: 100,
+                      height: 100,
+                      child: MyTooltip(
+                        message:
+                            MapsUtil.convertToAddress(mapsProvider.placemark),
+                        child: const Icon(
+                          Icons.location_pin,
+                          color: AppColors.whiteColor,
+                          size: 40,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
             ],
           ),
         ),

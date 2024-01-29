@@ -66,7 +66,7 @@ class MyRouterDelegate with ChangeNotifier {
             GoRoute(
               path: RouteName.addStoryScreen.pathName,
               name: RouteName.addStoryScreen.name,
-              builder: (context, state) => AddStoryScreen(),
+              builder: (context, state) => const AddStoryScreen(),
             ),
             GoRoute(
               path: RouteName.mapsScreen.pathName,
@@ -88,9 +88,5 @@ class MyRouterDelegate with ChangeNotifier {
             ),
       ),
     );
-  }
-
-  void popRoute() {
-    globalContext?.pop();
   }
 }

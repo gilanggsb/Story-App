@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../maps_screen/utils/utils.dart';
@@ -31,7 +30,6 @@ class _DetailStoryScreenState extends State<DetailStoryScreen> {
   }
 
   void getDetailStory() async {
-    await Geolocator.requestPermission();
     Timer(const Duration(seconds: 1), () {
       _detailStoryProvider.getDetailStory(widget.storyId);
     });

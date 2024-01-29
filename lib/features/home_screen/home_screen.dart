@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../common/common.dart';
@@ -33,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    super.initState();
     homeProvider.scrollController.addListener(() {
       if (homeProvider.scrollController.position.pixels >=
           homeProvider.scrollController.position.maxScrollExtent) {
@@ -43,7 +41,11 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     });
 
-    Future.microtask(() async => getStories());
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      getStories();
+    });
+
+    super.initState();
   }
 
   @override
