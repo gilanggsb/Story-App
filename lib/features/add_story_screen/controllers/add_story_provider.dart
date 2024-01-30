@@ -99,7 +99,6 @@ class AddStoryProvider extends ChangeNotifier {
         isPreviewMode: false,
       ),
     );
-    print("cekk ress $res");
     if (res == null) return;
     placemark = res.$1;
     latLng = res.$2;

@@ -45,7 +45,6 @@ class HomeProvider extends ChangeNotifier {
 
   void getStories() async {
     try {
-      print("CEKK ITEMS $pageItems");
       if (pageItems == 1) {
         homeState = HomeState.loading;
         notifyListeners();

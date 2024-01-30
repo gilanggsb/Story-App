@@ -55,16 +55,24 @@ class MapsProvider extends ChangeNotifier {
     }
   }
 
-  void onMapChanged(pickedData) {
-    if (pickedData == null) return;
-    // pickData = pickedData;
-    notifyListeners();
-  }
-
   void saveLocation() {
     homeProvider.clearStories();
     Timer(const Duration(milliseconds: 500), () {
       globalContext?.pop((placemark, latLong));
     });
+  }
+
+  void onMapTap(TapPosition tapPosition, LatLng point) async {
+    try {
+      showLoading();
+      latLong = point;
+      notifyListeners();
+      placemark = await _mapsRepository.getLocation(point);
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    } finally {
+      dismissLoading();
+    }
   }
 }
