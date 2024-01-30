@@ -77,39 +77,56 @@ class _HomeScreenState extends State<HomeScreen> {
           color: AppColors.whiteColor,
         ),
       ),
-      body: Consumer<HomeProvider>(
-        builder: (context, value, child) {
-          return ListView.builder(
-            controller: homeProvider.scrollController,
-            shrinkWrap: true,
-            itemCount:
-                homeProvider.stories.length + (value.pageItems != null ? 1 : 0),
-            itemBuilder: (context, index) {
-              final state = value.homeState;
-              if (index == homeProvider.stories.length &&
-                  value.pageItems != null) {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(8),
-                    child: CircularProgressIndicator(),
+      body: Center(
+        child: Consumer<HomeProvider>(
+          builder: (context, value, child) {
+            return ListView.builder(
+              controller: homeProvider.scrollController,
+              shrinkWrap: true,
+              itemCount: homeProvider.stories.length +
+                  (value.pageItems != null ? 1 : 0),
+              itemBuilder: (context, index) {
+                final state = value.homeState;
+                if (index == homeProvider.stories.length &&
+                    value.pageItems != null &&
+                    state == HomeState.loading) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(8),
+                      child: DefaultCircularProgressIndicator(
+                        color: AppColors.blackColor,
+                      ),
+                    ),
+                  );
+                }
+
+                if (state == HomeState.loaded) {
+                  final Story story = value.stories[index];
+                  return StoryCard(
+                    story: story,
+                    onPress: () => onPressStoryCard(story),
+                  );
+                }
+
+                return Center(
+                  child: Column(
+                    children: [
+                      const DefaultText(
+                        "Failed to fetch story",
+                        color: AppColors.blackColor,
+                      ),
+                      DefaultButton(
+                        margin: const EdgeInsets.only(top: 10),
+                        onPress: getStories,
+                        text: 'Refresh',
+                      )
+                    ],
                   ),
                 );
-              }
-
-              if (state == HomeState.loaded) {
-                final Story story = value.stories[index];
-                return StoryCard(
-                  story: story,
-                  onPress: () => onPressStoryCard(story),
-                );
-              }
-
-              return const Center(
-                child: Text("No data"),
-              );
-            },
-          );
-        },
+              },
+            );
+          },
+        ),
       ),
     );
   }

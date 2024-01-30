@@ -12,6 +12,7 @@ enum HomeState {
   initial,
   loading,
   loaded,
+  failed,
 }
 
 class HomeProvider extends ChangeNotifier {
@@ -69,8 +70,12 @@ class HomeProvider extends ChangeNotifier {
 
       notifyListeners();
     } on String catch (e) {
+      homeState = HomeState.failed;
+      notifyListeners();
       _myRouter.showSnackbar(e);
     } catch (e) {
+      homeState = HomeState.failed;
+      notifyListeners();
       _myRouter.showSnackbar('Something went wrong $e');
     } finally {}
   }
