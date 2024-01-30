@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-    homeProvider.scrollController.dispose();
+    // homeProvider.scrollController.dispose();
     super.dispose();
   }
 

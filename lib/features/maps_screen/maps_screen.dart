@@ -64,7 +64,9 @@ class MapsScreenState extends State<MapsScreen> {
               maxZoom: 30,
               minZoom: 1,
               keepAlive: true,
-              onTap: mapsProvider.onMapTap,
+              onTap: widget.mapsScreenModel.isPreviewMode
+                  ? null
+                  : mapsProvider.onMapTap,
             ),
             children: [
               TileLayer(
@@ -86,9 +88,7 @@ class MapsScreenState extends State<MapsScreen> {
                       heroTag: 'currentLocationButton',
                       mini: true,
                       backgroundColor: AppColors.whiteColor,
-                      onPressed: widget.mapsScreenModel.isPreviewMode
-                          ? null
-                          : mapsProvider.getUserLocation,
+                      onPressed: mapsProvider.getUserLocation,
                       child: const Icon(Icons.location_searching_outlined),
                     ),
                 ],
